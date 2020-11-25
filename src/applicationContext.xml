@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="HelloWorld" class="org.model.HelloWorld">
+        <property name="message" value="Hello World!"/>
+    </bean>
+    <bean id="man" class="org.interfaces.impl.Man">
+        <property name="food" ref="apple"/>
+    </bean>
+    <bean id="apple" class="org.interfaces.impl.Apple"/>
+    <!--spring依赖注入作业-->
+    <!--example1-->
+    <bean id="dogOne" class="org.model.Dog">
+        <property name="names" value="dogOne"/>
+        <property name="age" value="5"/>
+        <property name="sex" value="man"/>
+    </bean>
+    <bean id="dogTwo" class="org.model.Dog">
+        <constructor-arg index="0" value="dogTwo"/>
+        <constructor-arg index="1" value="6"/>
+        <constructor-arg index="2" value="women"/>
+    </bean>
+    <!--example2-->
+    <bean id="dao1" class="org.model.OrderDao">
+        <property name="response" value="daoOne"/>
+    </bean>
+    <bean id="dao2" class="org.model.OrderDao">
+        <constructor-arg value="daoTwo"/>
+    </bean>
+    <bean id="service1" class="org.model.OrderService">
+        <property name="orderDao" ref="dao1"/>
+    </bean>
+    <bean id="service2" class="org.model.OrderService">
+        <constructor-arg ref="dao2"/>
+    </bean>
+    <bean id="ctrlOne" class="org.model.OrderController">
+        <property name="orderService" ref="service1"/>
+    </bean>
+    <bean id="ctrlTwo" class="org.model.OrderController">
+        <constructor-arg ref="service2"/>
+    </bean>
+    <!--example3-->
+    <bean id="complexOne" class="org.model.ComplexAssembly">
+        <property name="id" value="1"/>
+        <property name="list">
+            <list>
+                <value>javaee</value>
+                <value>c++</value>
+            </list>
+        </property>
+        <property name="map">
+            <map>
+                <entry key="aaa" value="bbb"/>
+                <entry key="bbb" value="ccc"/>
+            </map>
+        </property>
+        <property name="set">
+            <set>
+                <value>python</value>
+                <value>c#</value>
+            </set>
+        </property>
+        <property name="array">
+            <array>
+                <value>c</value>
+                <value>javaScript</value>
+            </array>
+        </property>
+        <property name="properties">
+            <null/>
+        </property>
+    </bean>
+    <bean id="complexTwo" class="org.model.ComplexAssembly">
+        <constructor-arg index="0" value="2"/>
+        <constructor-arg index="1">
+            <list>
+                <value>a</value>
+                <value>b</value>
+            </list>
+        </constructor-arg>
+        <constructor-arg index="2">
+            <map>
+                <entry key="ccc" value="ddd"/>
+                <entry key="ddd" value="eee"/>
+            </map>
+        </constructor-arg>
+        <constructor-arg index="3">
+            <set>
+                <value>c</value>
+                <value>d</value>
+            </set>
+        </constructor-arg>
+        <constructor-arg index="4">
+            <array>
+                <value>e</value>
+                <value>f</value>
+            </array>
+        </constructor-arg>
+        <constructor-arg index="5">
+            <null/>
+        </constructor-arg>
+    </bean>
+    <!--Spring AOP基础-->
+    <!--注册前置通知类-->
+    <bean id="beforeAdvice" class="org.aop.advice.AdviceBeforeHello"/>
+    <!--注册代理类-->
+    <bean id="proxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <!--指定应用的接口-->
+        <property name="proxyInterfaces" value="org.proxy.interfaces.IHello"/>
+        <!--目标对象，本例即为Hello对象-->
+        <property name="target" ref="hello"/>
+        <!--应用的前置通知，拦截器名称-->
+        <property name="interceptorNames">
+            <list>
+                <value>beforeAdvice</value>
+            </list>
+        </property>
+    </bean>
+    <!--注册接口实现类-->
+    <bean id="hello" class="org.proxy.interfaces.Impl.Hello"/>
+    <bean id="arithmeticBeforeAdvice" class="org.aop.advice.AdviceBeforeArithmeticCalculator"/>
+    <bean id="arithmeticAfterAdvice" class="org.aop.advice.AdviceAfterArithmetic"/>
+    <bean id="arithmeticExceptionAdvice" class="org.aop.advice.AdviceExceptionArithmetic"/>
+    <bean id="arithmeticProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="proxyInterfaces" value="org.aop.interfaces.ArithmeticCalculator"/>
+        <property name="target" ref="arithmetic"/>
+        <property name="interceptorNames">
+            <list>
+                <value>arithmeticBeforeAdvice</value>
+                <value>arithmeticAfterAdvice</value>
+                <value>arithmeticExceptionAdvice</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="arithmetic" class="org.aop.interfaces.Impl.ArithmeticCalculatorImpl"/>
+</beans>
